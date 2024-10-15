@@ -3,6 +3,7 @@ package org.example.dao;
 import org.example.model.Cliente;
 import org.example.model.ClienteFactory;
 
+import java.lang.invoke.StringConcatFactory;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,16 +61,53 @@ public class ClienteDaoImpl implements ClienteDao {
 
     @Override
     public Cliente findById(Long id, ClienteFactory clienteFactory) {
-        return null;
+        String sql = "SELECT * FROM T_SEG_CLIENTE WHERE id = ?";
+        Cliente cliente = null;
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setLong(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                cliente = clienteFactory.createCliente(
+                        rs.getLong("id"),
+                        rs.getString("nome"),
+                        rs.getString("cpf"),
+                        rs.getDate("dt_nascimento").toLocalDate(),
+                        rs.getString("email"),
+                        rs.getString("endereco")
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return cliente;
     }
 
     @Override
     public void update(Cliente cliente) {
+        String sql = "UPDATE T_SEG_CLIENTE SET email = ?, endereco = ? WHERE id = ?";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, cliente.getEmail());
+            pstmt.setString(2, cliente.getEndereco());
+            pstmt.setLong(3, cliente.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
     @Override
     public void delete(Long id) {
-
+        String sql = "DELETE FROM T_SEG_CLIENTE WHERE id = ?";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setLong(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }

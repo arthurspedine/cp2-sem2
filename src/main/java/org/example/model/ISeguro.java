@@ -1,7 +1,7 @@
 package org.example.model;
 
 public interface ISeguro {
-    Long getId();
-    Double getValor();
-    TipoSeguro getTipo();
+    int getId();
+    String getValor();
+    String getTipo();
 }

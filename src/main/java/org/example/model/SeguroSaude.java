@@ -9,17 +9,17 @@ class SeguroSaude implements ISeguro {
     }
 
     @Override
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
     @Override
-    public Double getValor() {
+    public String getValor() {
         return 1200.0d;
     }
 
     @Override
-    public TipoSeguro getTipo() {
+    public String getTipo() {
         return TipoSeguro.SAUDE;
     }
 }

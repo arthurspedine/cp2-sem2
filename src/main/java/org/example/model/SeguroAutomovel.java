@@ -9,17 +9,17 @@ public class SeguroAutomovel implements ISeguro{
     }
 
     @Override
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
     @Override
-    public Double getValor() {
+    public String getValor() {
         return 1440.0;
     }
 
     @Override
-    public TipoSeguro getTipo() {
+    public String getTipo() {
         return TipoSeguro.AUTOMOVEL;
     }
 }
