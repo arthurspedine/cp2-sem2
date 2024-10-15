@@ -41,7 +41,7 @@ public class ClienteDaoImpl implements ClienteDao {
             PreparedStatement pstmt = connection.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Cliente cliente = clienteFactory.createClienteComId(
+                Cliente cliente = clienteFactory.createCliente(
                         rs.getLong("id"),
                         rs.getString("nome"),
                         rs.getString("cpf"),
