@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Contratacao {
     private Long id;
     private Cliente cliente;
-    private Seguro seguro;
+    private ISeguro seguro;
     private LocalDate dataContratacao;
     private StatusContratacao status;
 }

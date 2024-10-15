@@ -1,8 +1,8 @@
 package org.example.model;
 
 public enum StatusContratacao {
-    ATIVO("Ativo"),
-    INATIVO("Inativo");
+    ATIVO("ativo"),
+    INATIVO("inativo");
 
     private String descricao;
 
