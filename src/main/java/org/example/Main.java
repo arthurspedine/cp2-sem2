@@ -1,17 +1,14 @@
 package org.example;
 
 import org.example.config.DatabaseConfig;
-import org.example.dao.ClienteDaoImpl;
-import org.example.dao.ContratacaoDaoImpl;
-import org.example.dao.SeguroDaoImpl;
-import org.example.dao.SinistroDaoImpl;
+import org.example.dao.*;
 import org.example.model.*;
 import org.example.service.ContratacaoService;
+import org.example.service.PagamentoService;
 import org.example.service.SinistroService;
 import org.example.service.cliente.ClienteServiceFactory;
 import org.example.service.cliente.IClienteService;
 import org.example.service.seguro.ISeguroService;
-import org.example.service.seguro.SeguroService;
 import org.example.service.seguro.SeguroServiceFactory;
 
 import java.sql.Connection;
@@ -44,6 +41,8 @@ public class Main {
 
         SinistroService sinistroService = new SinistroService(new SinistroDaoImpl(connection));
 
+        PagamentoService pagamentoService = new PagamentoService(new PagamentoDaoImpl(connection));
+
         // CADASTRANDO UM CLIENTE NOVO
         Cliente clienteUm = new Cliente(null, "Arthur", "49076311897", LocalDate.parse("28/06/2006", DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 "arthur@gmail.com", "Rua Teste 392");
@@ -54,13 +53,13 @@ public class Main {
         Long idSeguro = seguroService.criarSeguro(seguroMock);
 
         // CADASTRANDO UMA CONTRATACAO QUE TERA O ID DO CLIENTE E ID DO SEGURO
-        Long idContratacao = contratacaoService.criarContratacao(idCliente, idSeguro);
+        Long idContratacaoDesativada = contratacaoService.criarContratacao(idCliente, idSeguro);
 
         // DESATIVANDO CONTRATACAO
-        contratacaoService.desativarContratacao(idContratacao);
+        contratacaoService.desativarContratacao(idContratacaoDesativada);
 
         try {
-            contratacaoService.desativarContratacao(idContratacao);
+            contratacaoService.desativarContratacao(idContratacaoDesativada);
         } catch (RuntimeException e) {
             // ERRO AO DESATIVAR UMA CONTRATAÇÃO INATIVA
             System.out.println(e.getMessage());
@@ -71,7 +70,11 @@ public class Main {
         Long idContratacaoDois = contratacaoService.criarContratacao(idCliente, idSeguroDois);
 
         // CRIANDO UM SINISTRO
-        Sinistro sinistro = new Sinistro(null, idContratacaoDois, "Eu bati meu carro", null, 820.5);
+        Sinistro sinistro = null;
+        // REGRA -> CONTRATAÇÃO SEMPRE DEVE ESTAR ATIVA PARA FAZER UM SERVIÇO OU PAGAMENTO
+        if (contratacaoService.findById(idContratacaoDois).isContratacaoAtiva()) {
+            sinistro = new Sinistro(null, idContratacaoDois, "Eu bati meu carro", null, 820.5);
+        }
         Long id = sinistroService.criarSinistro(sinistro);
         Sinistro sinistroBanco = sinistroService.buscarSinistro(id);
         System.out.println(sinistroBanco);
@@ -87,10 +90,22 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
+        // CRIANDO UM PAGAMENTO
+        Pagamento pagamento = null;
+        if (contratacaoService.findById(idContratacaoDois).isContratacaoAtiva()) {
+            pagamento = new Pagamento(null, idContratacaoDois, 150.0, LocalDate.now());
+        }
+        Long idPagamentoNovo = pagamentoService.criarPagamento(pagamento);
+        Pagamento pagamentoBanco = pagamentoService.buscarPagamento(idPagamentoNovo);
+        System.out.println(pagamentoBanco);
 
+        if (contratacaoService.findById(idContratacaoDesativada).isContratacaoAtiva()) {
+            pagamento = new Pagamento(null, idContratacaoDesativada, 190.0, LocalDate.now());
+        } else {
+            System.out.println("contratacao desativada, nao pode ser criado um novo pagamento!");
+        }
 
-
-
+        connection.close();
     }
 
 }

@@ -14,7 +14,7 @@ public class ClienteDaoImpl implements ClienteDao {
     public static synchronized ClienteDaoImpl getInstacia(Connection connection) {
         if (clienteDaoImpl == null) {
             clienteDaoImpl = new ClienteDaoImpl(connection);
-;        }
+        }
         return clienteDaoImpl;
     }
 

@@ -18,7 +18,7 @@ public class ContratacaoService {
         Contratacao contratacao = new Contratacao(null, idCliente, idSeguro, LocalDate.now(), StatusContratacao.ATIVO);
         Long id = dao.create(contratacao);
         if (id != null) {
-        System.out.println("Contratacao criada com sucesso!");
+            System.out.println("Contratacao criada com sucesso!");
             return id;
         } else {
             throw new RuntimeException("Erro ao criar contratacao!");
@@ -37,5 +37,13 @@ public class ContratacaoService {
             return;
         }
         throw new RuntimeException("Contratação não foi encontrada!");
+    }
+
+    public Contratacao findById(Long id) {
+        Contratacao contratacao = dao.findById(id);
+        if (contratacao == null) {
+            throw new RuntimeException("Contratação não encontrada!");
+        }
+        return contratacao;
     }
 }

@@ -45,6 +45,10 @@ public class Contratacao {
         this.dataContratacao = dataContratacao;
     }
 
+    public boolean isContratacaoAtiva() {
+        return status.equals(StatusContratacao.ATIVO);
+    }
+
     public StatusContratacao getStatus() {
         return status;
     }
