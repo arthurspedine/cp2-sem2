@@ -1,48 +1,58 @@
 package org.example.dao;
 
 import org.example.model.Cliente;
-import org.example.model.ClienteFactory;
 
-import java.lang.invoke.StringConcatFactory;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDaoImpl implements ClienteDao {
 
+    private static ClienteDaoImpl clienteDaoImpl;
     private final Connection connection;
 
-    public ClienteDaoImpl(Connection connection) {
+    public static synchronized ClienteDaoImpl getInstacia(Connection connection) {
+        if (clienteDaoImpl == null) {
+            clienteDaoImpl = new ClienteDaoImpl(connection);
+;        }
+        return clienteDaoImpl;
+    }
+
+    private ClienteDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public void create(Cliente cliente) {
+    public Long create(Cliente cliente) {
         String sql = "INSERT INTO T_SEG_CLIENTE(nome, cpf, dt_nascimento, email, endereco) VALUES (?, ?, ?, ?, ?)";
 
         try {
-            PreparedStatement pstmt = connection.prepareStatement(sql);
+            PreparedStatement pstmt = connection.prepareStatement(sql, new String[] {"id"});
             pstmt.setString(1, cliente.getNome());
             pstmt.setString(2, cliente.getCpf());
             pstmt.setDate(3, Date.valueOf(cliente.getDataNascimento()));
             pstmt.setString(4, cliente.getEmail());
             pstmt.setString(5, cliente.getEndereco());
             pstmt.executeUpdate();
+            ResultSet rs = pstmt.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        return null;
     }
 
     @Override
-    public List<Cliente> findAll(ClienteFactory clienteFactory) {
+    public List<Cliente> findAll() {
         List<Cliente> retorno = new ArrayList<>();
         String sql = "SELECT * FROM T_SEG_CLIENTE";
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Cliente cliente = clienteFactory.createCliente(
+                Cliente cliente = new Cliente(
                         rs.getLong("id"),
                         rs.getString("nome"),
                         rs.getString("cpf"),
@@ -60,7 +70,7 @@ public class ClienteDaoImpl implements ClienteDao {
     }
 
     @Override
-    public Cliente findById(Long id, ClienteFactory clienteFactory) {
+    public Cliente findById(Long id) {
         String sql = "SELECT * FROM T_SEG_CLIENTE WHERE id = ?";
         Cliente cliente = null;
         try {
@@ -68,7 +78,7 @@ public class ClienteDaoImpl implements ClienteDao {
             pstmt.setLong(1, id);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                cliente = clienteFactory.createCliente(
+                cliente = new Cliente(
                         rs.getLong("id"),
                         rs.getString("nome"),
                         rs.getString("cpf"),

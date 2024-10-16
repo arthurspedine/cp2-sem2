@@ -4,38 +4,33 @@ import java.time.LocalDate;
 
 public class Contratacao {
     private Long id;
-    private Cliente cliente;
-    private ISeguro seguro;
+    private Long idCliente;
+    private Long idSeguro;
     private LocalDate dataContratacao;
     private StatusContratacao status;
 
-    public Contratacao(Long id, Cliente cliente, ISeguro seguro, LocalDate dataContratacao, StatusContratacao status) {
+    public Contratacao(Long id, Long idCliente, Long idSeguro, LocalDate dataContratacao, StatusContratacao status) {
         this.id = id;
-        this.cliente = cliente;
-        this.seguro = seguro;
-        this.dataContratacao = dataContratacao;
+        this.idCliente = idCliente;
+        this.idSeguro = idSeguro;
         this.status = status;
+        if (id == null) {
+            setDataContratacao(dataContratacao);
+        } else {
+            this.dataContratacao = dataContratacao;
+        }
     }
 
     public Long getId() {
         return id;
     }
 
-
-    public Cliente getCliente() {
-        return cliente;
+    public Long getCliente() {
+        return idCliente;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public ISeguro getSeguro() {
-        return seguro;
-    }
-
-    public void setSeguro(ISeguro seguro) {
-        this.seguro = seguro;
+    public Long getSeguro() {
+        return idSeguro;
     }
 
     public LocalDate getDataContratacao() {

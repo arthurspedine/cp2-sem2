@@ -11,7 +11,7 @@ public class Cliente {
     private String email;
     private String endereco;
 
-    protected Cliente(Long id, String nome, String cpf, LocalDate dataNascimento, String email, String endereco) {
+    public Cliente(Long id, String nome, String cpf, LocalDate dataNascimento, String email, String endereco) {
         this.id = id;
         this.nome = nome;
         setCpf(cpf);

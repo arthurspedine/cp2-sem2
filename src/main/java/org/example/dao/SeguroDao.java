@@ -1,12 +1,15 @@
 package org.example.dao;
 
-import org.example.model.ISeguro;
+import org.example.model.Seguro;
+
+import java.util.List;
 
 public interface SeguroDao {
 
-    void create(ISeguro seguro);
-    void update(ISeguro seguro);
-    void delete(ISeguro seguro);
+    Long create(Seguro seguro);
+    List<Seguro> findAll();
+    void update(Seguro seguro);
+    void delete(Seguro seguro);
 
 
 }

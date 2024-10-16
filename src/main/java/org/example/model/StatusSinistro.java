@@ -1,8 +1,8 @@
 package org.example.model;
 
 public enum StatusSinistro {
-    ABERTO("aberto"),
-    EM_ANALISE("em analise"),
+    RECUSADO("recusado"),
+    EM_ANALISE("em_analise"),
     FECHADO("fechado");
 
     private String descricao;
