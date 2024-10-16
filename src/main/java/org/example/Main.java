@@ -5,10 +5,7 @@ import org.example.dao.ClienteDaoImpl;
 import org.example.dao.ContratacaoDaoImpl;
 import org.example.dao.SeguroDaoImpl;
 import org.example.dao.SinistroDaoImpl;
-import org.example.model.Cliente;
-import org.example.model.Seguro;
-import org.example.model.Sinistro;
-import org.example.model.TipoSeguro;
+import org.example.model.*;
 import org.example.service.ContratacaoService;
 import org.example.service.SinistroService;
 import org.example.service.cliente.ClienteServiceFactory;
@@ -76,7 +73,20 @@ public class Main {
         // CRIANDO UM SINISTRO
         Sinistro sinistro = new Sinistro(null, idContratacaoDois, "Eu bati meu carro", null, 820.5);
         Long id = sinistroService.criarSinistro(sinistro);
-        System.out.println(sinistroService.buscarSinistro(id));
+        Sinistro sinistroBanco = sinistroService.buscarSinistro(id);
+        System.out.println(sinistroBanco);
+
+        try {
+            // CODIGO FUNCIONA
+            sinistroService.alterarStatus(sinistroBanco, StatusSinistro.FECHADO);
+            System.out.println("Status do sinistro alterado com sucesso! Novo status: " + sinistroBanco.getStatus());
+            // AGORA ATUALIZAR SENDO QUE O STATUS JA ESTA FECHADO ou RECUSADO
+            sinistroService.alterarStatus(sinistroBanco, StatusSinistro.RECUSADO);
+        } catch (RuntimeException e) {
+            // ERRO AO ALTERAR STATUS DE UM SINISTRO
+            System.out.println(e.getMessage());
+        }
+
 
 
 

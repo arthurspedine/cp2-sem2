@@ -9,13 +9,9 @@ public class Sinistro {
     private Double valor;
 
     public Sinistro(Long id, Long idContratacao, String descricao, StatusSinistro status, Double valor) {
-        if (id == null) {
-            this.status = StatusSinistro.EM_ANALISE;
-        } else {
-            this.status = status;
-        }
         this.id = id;
         this.idContratacao = idContratacao;
+        setStatus(status);
         this.descricao = descricao;
         this.valor = valor;
     }
@@ -34,6 +30,18 @@ public class Sinistro {
 
     public StatusSinistro getStatus() {
         return status;
+    }
+
+    public void setStatus(StatusSinistro status) {
+        if (getId() == null) {
+            this.status = StatusSinistro.EM_ANALISE;
+        } else if (this.status == StatusSinistro.RECUSADO) {
+            throw new RuntimeException("Esse sinistro esta recusado! Não é possivel foi atualizar seu status!");
+        } else if (this.status == StatusSinistro.FECHADO) {
+            throw new RuntimeException("Esse sinistro já esta fechado e concluido então não pode ser atualizado!");
+        } else {
+            this.status = status;
+        }
     }
 
     public Double getValor() {

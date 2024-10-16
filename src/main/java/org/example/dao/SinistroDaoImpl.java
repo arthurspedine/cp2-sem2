@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import oracle.jdbc.proxy.annotation.Pre;
 import org.example.model.Sinistro;
 import org.example.model.StatusSinistro;
 
@@ -67,7 +68,15 @@ public class SinistroDaoImpl implements SinistroDao{
 
     @Override
     public void update(Sinistro sinistro) {
-
+        String sql = "UPDATE t_seg_sinistro SET status = ? where id = ?";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, sinistro.getStatus().getDescricao());
+            pstmt.setLong(2, sinistro.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

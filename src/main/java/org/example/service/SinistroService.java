@@ -2,6 +2,9 @@ package org.example.service;
 
 import org.example.dao.SinistroDao;
 import org.example.model.Sinistro;
+import org.example.model.StatusSinistro;
+
+import java.sql.SQLException;
 
 public class SinistroService {
     private final SinistroDao dao;
@@ -25,5 +28,14 @@ public class SinistroService {
             throw new RuntimeException("Sinistro não encontrado!");
         }
         return sinistro;
+    }
+
+    public void alterarStatus(Sinistro sinistro, StatusSinistro statusSinistro) {
+        try {
+            sinistro.setStatus(statusSinistro);
+            dao.update(sinistro);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
