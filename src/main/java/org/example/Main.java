@@ -8,7 +8,9 @@ import org.example.service.PagamentoService;
 import org.example.service.SinistroService;
 import org.example.service.cliente.ClienteServiceFactory;
 import org.example.service.cliente.IClienteService;
+import org.example.service.cliente.IClienteServiceFactory;
 import org.example.service.seguro.ISeguroService;
+import org.example.service.seguro.ISeguroServiceFactory;
 import org.example.service.seguro.SeguroServiceFactory;
 
 import java.sql.Connection;
@@ -29,12 +31,10 @@ public class Main {
         System.out.println("Conexão realizada com sucesso!");
 
         ClienteDaoImpl clienteDao = ClienteDaoImpl.getInstacia(connection);
-        ClienteServiceFactory clienteServiceFactory = new ClienteServiceFactory();
-
+        IClienteServiceFactory clienteServiceFactory = new ClienteServiceFactory();
         IClienteService clienteService = clienteServiceFactory.create(clienteDao);
 
-        SeguroServiceFactory seguroServiceFactory = new SeguroServiceFactory();
-
+        ISeguroServiceFactory seguroServiceFactory = new SeguroServiceFactory();
         ISeguroService seguroService = seguroServiceFactory.create(new SeguroDaoImpl(connection));
 
         ContratacaoService contratacaoService = new ContratacaoService(new ContratacaoDaoImpl(connection));
